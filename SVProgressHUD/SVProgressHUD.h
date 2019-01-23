@@ -20,7 +20,8 @@ extern NSString * _Nonnull const SVProgressHUDStatusUserInfoKey;
 typedef NS_ENUM(NSInteger, SVProgressHUDStyle) {
     SVProgressHUDStyleLight NS_SWIFT_NAME(light),        // default style, white HUD with black text, HUD background will be blurred
     SVProgressHUDStyleDark NS_SWIFT_NAME(dark),         // black HUD and white text, HUD background will be blurred
-    SVProgressHUDStyleCustom NS_SWIFT_NAME(custom)        // uses the fore- and background color properties
+    SVProgressHUDStyleCustom NS_SWIFT_NAME(custom),        // uses the fore- and background color properties
+    SVProgressHUDStyleGradient NS_SWIFT_NAME(gradient)
 };
 
 typedef NS_ENUM(NSUInteger, SVProgressHUDMaskType) {
@@ -74,6 +75,7 @@ typedef void (^SVProgressHUDDismissCompletion)(void);
 @property (assign, nonatomic) UIWindowLevel maxSupportedWindowLevel; // default is UIWindowLevelNormal
 
 @property (assign, nonatomic) BOOL hapticsEnabled;	// default is NO
+@property (strong, nonatomic, nonnull) NSArray *gradientColors UI_APPEARANCE_SELECTOR;
 
 + (void)setDefaultStyle:(SVProgressHUDStyle)style;                  // default is SVProgressHUDStyleLight
 + (void)setDefaultMaskType:(SVProgressHUDMaskType)maskType;         // default is SVProgressHUDMaskTypeNone
@@ -103,6 +105,7 @@ typedef void (^SVProgressHUDDismissCompletion)(void);
 + (void)setFadeOutAnimationDuration:(NSTimeInterval)duration;       // default is 0.15 seconds
 + (void)setMaxSupportedWindowLevel:(UIWindowLevel)windowLevel;      // default is UIWindowLevelNormal
 + (void)setHapticsEnabled:(BOOL)hapticsEnabled;						// default is NO
++ (void)setGradientColors:(nonnull NSArray*)colors;
 
 #pragma mark - Show Methods
 

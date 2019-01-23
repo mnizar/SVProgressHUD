@@ -196,6 +196,10 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
     [self sharedView].hapticsEnabled = hapticsEnabled;
 }
 
++ (void)setGradientColors:(nonnull NSArray*)colors {
+    [self sharedView].gradientColors = colors;
+}
+
 #pragma mark - Show Methods
 
 + (void)show {
@@ -1166,7 +1170,7 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 - (UIColor*)foregroundColorForStyle {
     if(self.defaultStyle == SVProgressHUDStyleLight) {
         return [UIColor blackColor];
-    } else if(self.defaultStyle == SVProgressHUDStyleDark) {
+    } else if(self.defaultStyle == SVProgressHUDStyleDark || self.defaultStyle == SVProgressHUDStyleGradient) {
         return [UIColor whiteColor];
     } else {
         return self.foregroundColor;
@@ -1176,7 +1180,7 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 - (UIColor*)backgroundColorForStyle {
     if(self.defaultStyle == SVProgressHUDStyleLight) {
         return [UIColor whiteColor];
-    } else if(self.defaultStyle == SVProgressHUDStyleDark) {
+    } else if(self.defaultStyle == SVProgressHUDStyleDark || self.defaultStyle == SVProgressHUDStyleGradient) {
         return [UIColor blackColor];
     } else {
         return self.backgroundColor;
@@ -1356,7 +1360,16 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 }
     
 - (void)fadeInEffects {
-    if(self.defaultStyle != SVProgressHUDStyleCustom) {
+    if (self.defaultStyle == SVProgressHUDStyleGradient) {
+        CAGradientLayer *gradient = [CAGradientLayer layer];
+        gradient.frame = self.hudView.bounds;
+        gradient.startPoint = CGPointMake(0.0f, 0.0f);
+        gradient.endPoint = CGPointMake(0.0f, 1.0f);
+        gradient.colors = self.gradientColors;
+        [self.hudView.layer insertSublayer:gradient atIndex:0];
+    } else if (self.defaultStyle == SVProgressHUDStyleCustom) {
+        self.hudView.backgroundColor =  self.backgroundColorForStyle;
+    } else {
         // Add blur effect
         UIBlurEffectStyle blurEffectStyle = self.defaultStyle == SVProgressHUDStyleDark ? UIBlurEffectStyleDark : UIBlurEffectStyleLight;
         UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:blurEffectStyle];
@@ -1367,8 +1380,6 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
         // https://www.omnigroup.com/developer/how-to-make-text-in-a-uivisualeffectview-readable-on-any-background
         
         self.hudView.backgroundColor = [self.backgroundColorForStyle colorWithAlphaComponent:0.6f];
-    } else {
-        self.hudView.backgroundColor =  self.backgroundColorForStyle;
     }
 
     // Fade in views
@@ -1506,6 +1517,10 @@ static const CGFloat SVProgressHUDLabelSpacing = 8.0f;
 
 - (void)setMaxSupportedWindowLevel:(UIWindowLevel)maxSupportedWindowLevel {
     if (!_isInitializing) _maxSupportedWindowLevel = maxSupportedWindowLevel;
+}
+
+- (void)setGradientColors:(NSArray *)gradientColors {
+    if (!_isInitializing) _gradientColors = gradientColors;
 }
 
 @end
